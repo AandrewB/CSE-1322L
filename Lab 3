@@ -1,0 +1,122 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Quiz {
+    private ArrayList<Question> questions = new ArrayList<>();
+    private int score = 0;
+
+    public void addQuestion() {
+        Scanner scan = new Scanner(System.in);
+        System.out.print("What is the Question Text? \n");
+        String questionText = scan.nextLine();
+        System.out.print("What is the answer? \n");
+        String questionAnswer = scan.nextLine();
+        System.out.print("How difficult (1-3)? ");
+        int difficulty = scan.nextInt();
+        scan.nextLine();
+        Question newQuestion = new Question(questionText, questionAnswer, difficulty);
+        questions.add(newQuestion);
+    }
+
+    public void removeQuestion() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Select a question to remove:");
+        for (int i = 0; i < questions.size(); i++) {
+            System.out.println((i) + ". " + questions.get(i).getQuestionText());
+        }
+        int choice = scanner.nextInt();
+        questions.remove(choice - 1);
+    }
+
+    public void modifyQuestion() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Choose the question to modify? ");
+        for (int i = 0; i < questions.size(); i++) {
+            System.out.println((i) + ". " + questions.get(i).getQuestionText());
+        }
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("What is the Question text? \n");
+        String newQuestionText = scanner.nextLine();
+        System.out.print("What is the answer? \n");
+        String newQuestionAnswer = scanner.nextLine();
+        System.out.print("How difficult (1-3) \n");
+        int newDifficulty = scanner.nextInt();
+        Question modifiedQuestion = new Question(newQuestionText, newQuestionAnswer, newDifficulty);
+        questions.set(choice - 1, modifiedQuestion);
+    }
+
+    public void giveQuiz() {
+        Scanner scanner = new Scanner(System.in);
+        score = 0;
+        for (Question question : questions) {
+            System.out.println(question.getQuestionText());
+            String userAnswer = scanner.nextLine();
+            if (userAnswer.equalsIgnoreCase(question.getQuestionAnswer())) {
+                System.out.println("Correct");
+                score++;
+            } else {
+                System.out.println("Incorrect");
+            }
+        }
+        System.out.println("You got " + score + " out of " + questions.size());
+    }
+}
+class Question {
+    private String questionText;
+    private String questionAnswer;
+    private int difficulty;
+
+    public Question(String questionText, String questionAnswer, int difficulty) {
+        this.questionText = questionText;
+        this.questionAnswer = questionAnswer;
+        this.difficulty = difficulty;
+    }
+
+
+    public String getQuestionText() {
+        return questionText;
+    }
+
+    public String getQuestionAnswer() {
+        return questionAnswer;
+    }
+
+    public int getDifficulty() {
+        return difficulty;
+    }
+}
+import java.util.Scanner;
+
+public class Main{
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        Quiz quiz = new Quiz();
+        int choice;
+
+        do {
+            System.out.println("What would you like to do?");
+            System.out.println("1. Add a question to the quiz");
+            System.out.println("2. Remove a question from the quiz");
+            System.out.println("3. Modify a question in the quiz");
+            System.out.println("4. Take the quiz");
+            System.out.println("5. Quit");
+             choice = scan.nextInt();
+
+             if (choice==1) {
+                 quiz.addQuestion();
+             }
+                if (choice==2) {
+                    quiz.removeQuestion();
+                }
+                if (choice==3) {
+                    quiz.modifyQuestion();
+                }
+                if (choice==4) {
+                    quiz.giveQuiz();
+                }
+
+            }
+        while (choice != 5);
+        }
+    }
