@@ -1,0 +1,51 @@
+import java.util.Scanner;
+
+public class Lab7B {
+    public static String repeatNTimes(String x, int y){
+        if (y == 0){
+            return "";
+        }
+        else
+            System.out.println(x);
+            return repeatNTimes(x,y-1);
+
+    }
+    public static boolean isReverse(String one, String two){
+
+        if(one.length() != two.length()){
+            return false;
+        }
+
+        if(one.length() == 0){
+            return true;
+        }
+
+
+        char firstChar = one.charAt(0);
+        char lastChar = two.charAt(two.length()-1);
+
+        System.out.println(one);
+        if(firstChar != lastChar){
+            return false;
+        }
+
+        return isReverse(one.substring(1), two.substring(0,two.length()-1));
+
+    }
+    public static void main(String args[]){
+        Scanner s = new Scanner(System.in);
+        String study = "I must study recursion until it makes sense";
+        String repeat = repeatNTimes(study,30);
+        System.out.println(repeat);
+
+        System.out.print("Enter the first string: ");
+        String first = s.nextLine();
+        System.out.print("Enter the second string: ");
+        String second = s.nextLine();
+
+        boolean reverse = isReverse(first,second);
+        System.out.println(reverse);
+
+
+    }
+}
