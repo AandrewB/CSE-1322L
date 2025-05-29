@@ -1,0 +1,39 @@
+public interface FindFib {
+    int calculate_fib(int num);
+}
+public class FibIteration implements FindFib{
+    public int calculate_fib(int num){
+        if (num == 1 || num == 2) {
+            return 1;
+        }
+            int f[] = new int[num + 2];
+            f[0] = 1;
+            f[1] = 1;
+            for (int i = 2; i < num; i++){
+                f[i] = f[i -1] + f[i - 2];
+            }
+            return f[num -1];
+        }
+
+    }
+public class FibFormula implements FindFib {
+    public int calculate_fib(int num) {
+        double formula = (1 + Math.sqrt(5)) / 2;
+        return (int) Math.round(Math.pow(formula, num)
+                / Math.sqrt(5));
+    }
+}
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.print("Enter the number you want to find the Fibonacci Series for: ");
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        FibIteration obj1 = new FibIteration();
+        FibFormula obj2 = new FibFormula();
+        System.out.println("Fib of 10 by iteration is: " + obj1.calculate_fib(n));
+
+        System.out.println("Fib of 10 by formula is:  " + obj2.calculate_fib(n));
+    }
+}
