@@ -1,0 +1,387 @@
+abstract public class Box extends Mail {
+    private double height;
+    private int count;
+
+    public Box(){
+        super();
+        height = 0;
+        count = 0;
+    }
+
+    public Box(String delivery, String Return, double Width, double Length, double high, int numbers){
+        super(delivery, Return, Width, Length);
+        height = high;
+        count = numbers;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "\n" + getWidth() + " x " + getLength() + " x " + getHeight();
+    }
+}
+abstract public class Envelope extends Mail {
+    private double thickness;
+
+    public Envelope(){
+        super();
+        thickness = 0;
+    }
+
+    public Envelope(String delivery, String Return, double Width, double Length, double thick){
+        super(delivery, Return, Width, Length);
+        thickness = thick;
+    }
+
+    public double getThickness() {
+        return thickness;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "\n" + getWidth() + " x " + getLength() + " x " + getThickness() ;
+    }
+}
+public class Flat extends Envelope{
+    private String contents;
+
+    public Flat(){
+        super();
+        contents = "";
+    }
+
+    public Flat(String delivery, String Return, double Width, double Length, double thick, String cont){
+        super(delivery, Return, Width, Length, thick);
+        contents = cont;
+    }
+
+    public String getContents() {
+        return contents;
+    }
+}
+public class Letter extends Envelope {
+    private String letterBody;
+
+    public Letter(){
+        super();
+        letterBody = "";
+    }
+
+    public Letter(String delivery, String Return, double Width, double Length, double thick, String body){
+        super(delivery, Return, Width, Length, thick);
+        letterBody = body;
+    }
+
+    public String getLetterBody() {
+        return letterBody;
+    }
+
+}
+public class LiveBox extends Box {
+    private String animal;
+    private int age;
+
+    public LiveBox(){
+        super();
+        animal = "";
+        age = 0;
+    }
+
+    public LiveBox(String delivery, String Return, double Width, double Length, double high, int numbers, String mammal, int old){
+        super(delivery, Return, Width, Length, high, numbers);
+        animal = mammal;
+        age = old;
+    }
+
+    public String getAnimal() {
+        return animal;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "\n" + "Animal: " + getAnimal() + "\n" + "Count: " + getCount() + "\n" + "Age(Days): " + getAge();
+    }
+}
+public class Mail {
+    private String deliveryAddress;
+    private String returnAddress;
+    private double width;
+    private double length;
+    private int id;
+    private static int nextId = 0;
+
+    public Mail(){
+        deliveryAddress = "";
+        returnAddress = "";
+        width = 0.0;
+        length = 0.0;
+        id=nextId;
+        nextId++;
+    }
+    public Mail(String delivery, String Return, double Width, double Length){
+        deliveryAddress = delivery;
+        returnAddress = Return;
+        width = Width;
+        length = Length;
+        id = nextId;
+        nextId++;
+    }
+
+    public String getDeliveryAddress(){
+        return deliveryAddress;
+    }
+
+    public String getReturnAddress(){
+        return returnAddress;
+    }
+
+    public double getWidth(){
+        return width;
+    }
+
+    public double getLength(){
+        return length;
+    }
+
+    public int getId(){
+        return id;
+    }
+
+    public String toString(){
+        return id + "\n" + deliveryAddress + "\n" + returnAddress;
+    }
+public class RegularBox extends Box {
+
+    private String items;
+    private double weight;
+    public RegularBox(){
+        super();
+        items = "";
+        weight = 0;
+    }
+
+    public RegularBox(String delivery, String Return, double Width, double Length, double high, int numbers, String amount, double weigh){
+        super(delivery, Return, Width, Length, high, numbers);
+        items = amount;
+        weight = weigh;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public String getItems() {
+        return items;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString()+ "\n" + "Items: " + getItems() + "\n" + "Count: " + getCount() + "\n" + "Weight: " + getWeight();
+    }
+}
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class MailRoom {
+    public static boolean handleLetter(Letter letter, List<Mail> deliver) {
+        if (letter.getDeliveryAddress().equals("") || letter.getReturnAddress().equals("") || letter.getLength() < 5 || letter.getLength() > 11.5 ||
+                letter.getWidth() < 3.5 || letter.getWidth() > 6.125 || letter.getThickness() < .007 || letter.getThickness() > .25 || letter.getLength() < letter.getWidth() + 1.5) {
+            return false;
+        }
+        else{
+            return deliver.add(letter);
+        }
+
+    }
+
+    public static boolean handleFlat(Flat flat, List<Mail> deliver){
+        if (flat.getDeliveryAddress().equals("") || flat.getReturnAddress().equals("") || flat.getLength() < 11.5 || flat.getLength() > 15 ||
+                flat.getWidth() < 6.125 && flat.getWidth() > 12 || flat.getThickness() < .25 && flat.getThickness() > .75 || !flat.getContents().equals("DOCUMENTS")){
+            return false;
+        }
+        else {
+            return deliver.add(flat);
+        }
+    }
+
+    public static boolean handleRegularBox(RegularBox regularBox, List<Mail> deliver){
+        if (regularBox.getDeliveryAddress().equals("") || regularBox.getReturnAddress().equals("") || regularBox.getLength() < 6 || regularBox.getLength() > 27||
+                regularBox.getWidth() < .25 || regularBox.getWidth() > 17 || regularBox.getHeight() < 3 || regularBox.getHeight() > 17 || regularBox.getWeight() < 0 || regularBox.getWeight() > 70 ||
+                regularBox.getCount() < 0 || regularBox.getCount() >50){
+            return false;
+        }
+        else {
+            return deliver.add(regularBox);
+        }
+    }
+
+    public static boolean handleLiveBox(LiveBox liveBox, List<Mail> deliver){
+        if (liveBox.getDeliveryAddress().equals("") || liveBox.getReturnAddress().equals("") || liveBox.getLength() < 6 || liveBox.getLength() > 27 ||
+                liveBox.getWidth() < .25 || liveBox.getWidth() > 17 || liveBox.getHeight() < 3 || liveBox.getHeight() > 17 ||
+                liveBox.getAnimal().equalsIgnoreCase("HoneyBee") && liveBox.getCount() < 0 ||
+                liveBox.getCount() > 20 || liveBox.getAnimal().equalsIgnoreCase("Chicken") && liveBox.getCount() < 0 || liveBox.getCount() > 10 ||
+                liveBox.getAnimal().equalsIgnoreCase("Chicken") && liveBox.getAge() < 0 || liveBox.getAge() > 2){
+            return false;
+        }
+        else {
+            return deliver.add(liveBox);
+        }
+    }
+    public static void main(String [] args){
+        Scanner scan = new Scanner(System.in);
+
+        ArrayList <Mail> deliver = new ArrayList<>();
+
+        int choice;
+
+        do {
+            System.out.print("1- Send letter\n" +
+                    "2- Send flat\n" +
+                    "3- Send regular box\n" +
+                    "4- Send live box\n" +
+                    "5- Dispatch items\n" +
+                    "6- Quit\n" +
+                    "Enter option: ");
+            choice = scan.nextInt();
+
+            if (choice == 1){
+                System.out.print("Enter the delivery address: ");
+                String del_ad = scan.nextLine();
+                String del_add = scan.nextLine();
+                System.out.print("Enter the return address: ");
+
+                String ret_add = scan.nextLine();
+                System.out.print("Enter the width of your mail: ");
+                double Width = scan.nextDouble();
+                System.out.print("Enter the length of your mail: ");
+                double Length = scan.nextDouble();
+                System.out.print("Enter the thickness of your mail: ");
+                double Thick = scan.nextDouble();
+                System.out.print("Enter the contents of your letter: ");
+                String Content = scan.nextLine();
+                String Contents = scan.nextLine();
+
+                Letter letter = new Letter(del_add,ret_add,Width,Length,Thick,Contents);
+                handleLetter(letter,deliver);
+                if (!handleLetter(letter, deliver)){
+                    System.out.println("\nLetter cannot be mailed.\n");
+                }
+                else System.out.println("\nLetter accepted for delivery\n.");
+
+            }
+
+            if (choice == 2){
+                System.out.print("Enter the delivery address: ");
+                String del_ad = scan.nextLine();
+                String del_add = scan.nextLine();
+                System.out.print("Enter the return address: ");
+
+                String ret_add = scan.nextLine();
+                System.out.print("Enter the width of your mail: ");
+                double Width = scan.nextDouble();
+                System.out.print("Enter the length of your mail: ");
+                double Length = scan.nextDouble();
+                System.out.print("Enter the thickness of your mail: ");
+                double Thick = scan.nextDouble();
+                System.out.print("Enter the contents of your Flat: ");
+                String Content = scan.nextLine();
+                String Contents = scan.nextLine();
+
+                Flat flat = new Flat(del_add,ret_add,Width,Length,Thick,Contents);
+                handleFlat(flat,deliver);
+                if (!handleFlat(flat, deliver)){
+                    System.out.println("\nFLat cannot be mailed.\n");
+                }
+                else System.out.println("\nFlat accepted for delivery.\n");
+
+            }
+
+            if (choice == 3){
+                System.out.print("Enter the delivery address: ");
+                String del_ad = scan.nextLine();
+                String del_add = scan.nextLine();
+                System.out.print("Enter the return address: ");
+
+                String ret_add = scan.nextLine();
+                System.out.print("Enter the width of your mail: ");
+                double Width = scan.nextDouble();
+                System.out.print("Enter the length of your mail: ");
+                double Length = scan.nextDouble();
+                System.out.print("Enter the height of your mail: ");
+                double Height = scan.nextDouble();
+                System.out.print("Enter how many items your box has: ");
+                int Count = scan.nextInt();
+                System.out.print("Enter the weight of your box: ");
+                double Weight = scan.nextDouble();
+                System.out.print("Enter the contents of your box: ");
+                String Content = scan.nextLine();
+                String Contents = scan.nextLine();
+
+                RegularBox Reg_box = new RegularBox(del_add,ret_add,Width,Length,Height,Count,Contents,Weight);
+                handleRegularBox(Reg_box,deliver);
+                if (!handleRegularBox(Reg_box, deliver)){
+                    System.out.println("\nRegular Box cannot be mailed.\n");
+                }
+                else System.out.println("\nRegular Box accepted for delivery.\n");
+
+            }
+
+            if (choice == 4){
+                System.out.print("Enter the delivery address: ");
+                String del_ad = scan.nextLine();
+                String del_add = scan.nextLine();
+                System.out.print("Enter the return address: ");
+
+                String ret_add = scan.nextLine();
+                System.out.print("Enter the width of your mail: ");
+                double Width = scan.nextDouble();
+                System.out.print("Enter the length of your mail: ");
+                double Length = scan.nextDouble();
+                System.out.print("Enter the height of your mail: ");
+                double Height = scan.nextDouble();
+                System.out.print("Enter how many items your box has: ");
+                int Count = scan.nextInt();
+                System.out.print("Enter what animal is being shipped: ");
+                String Anima = scan.nextLine();
+                String Animal = scan.nextLine();
+                System.out.print("Enter age of the oldest animal, in days: ");
+                int Age = scan.nextInt();
+
+                LiveBox Live_box = new LiveBox(del_add,ret_add,Width,Length,Height,Count,Animal,Age);
+                handleLiveBox(Live_box,deliver);
+                if (!handleLiveBox(Live_box, deliver)){
+                    System.out.println("\nLive Box cannot be mailed.\n");
+                }
+                else System.out.println("\nLive Box accepted for delivery.\n");
+
+            }
+
+            if (choice == 5){
+
+                if (deliver.equals(""))
+                    System.out.println("Delivery queue is empty.\n");
+                else
+                    System.out.println("DISPATCHING THE FOLLOWING ITEMS FOR DELIVERY:\n==========\n");
+                for (Mail mail : deliver) {
+                    System.out.println(mail);
+                    System.out.println("==========");
+                }
+            }
+
+        }while(choice != 6);
+        System.out.println("Quitting...");
+    }
+}
+
