@@ -1,0 +1,273 @@
+import java.util.ArrayList;
+
+public class Dispatcher {
+
+    private ArrayList <Bus> busQueue;
+
+
+    public Dispatcher() {
+        busQueue = new ArrayList<>();
+    }
+
+    public int addBus(Bus bus){
+        busQueue.add(bus);
+        return busQueue.size() - 1;
+    }
+
+    public int addBus(Bus bus,int position){
+        if (position < 0 || position > busQueue.size()) {
+            position = busQueue.size();
+        }
+        busQueue.add(position,bus);
+        return position;
+    }
+
+    public Bus findBus(int id) {
+        for (Bus bus : busQueue) {
+            if (bus.getBusID() == id) {
+                return bus;
+            }
+        }
+        return null;
+    }
+
+    public Bus removeBus(int id) {
+        Bus bus = this.findBus(id);
+        if (bus != null) {
+            busQueue.remove(bus);
+            return bus;
+        } else {
+            return null;
+        }
+    }
+
+    public void dispatchBus() {
+        if (busQueue.isEmpty()) {
+            System.out.println("Bus queue is empty");
+        } else {
+            Bus bus = busQueue.remove(0);
+            System.out.println("Bus " + bus.getBusID() + " has been dispatched");
+        }
+    }
+
+    @Override
+    public String toString() {
+        String busString = "";
+        for (Bus bus : busQueue) {
+            busString += bus.toString() + "\n";
+        }
+        return busString;
+    }
+}
+import java.util.ArrayList;
+import java.util.Objects;
+
+public class Bus {
+    public ArrayList<Person> passengers ;
+    private static int NextID;
+    private int BusID;
+
+    public Bus(){
+        passengers = new ArrayList<Person>();
+        BusID = NextID;
+        NextID++;
+    }
+
+    public int getBusID(){
+        return BusID;
+    }
+
+    public void AddPerson(Person person){
+            passengers.add(person);
+    }
+
+    public boolean removeperson(Person person){
+        passengers.remove(person);
+       if(passengers.remove(person)){
+           return true;
+       }
+       else return false;
+    }
+    public Person findPerson(String name){
+        for (Person passenger : passengers) {
+            if (passenger.getName().equals(name)) {
+                return passenger;
+            }
+        }
+        return null;
+    }
+    public boolean transferPerson(Bus bus1,Bus bus2,Person person){
+        if (bus1.findPerson(person.getName()) != null) {
+            bus1.removeperson(person);
+            bus2.AddPerson(person);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public String getPassengers(){
+        String passengersString = "";
+        for (Person passenger : passengers) {
+            passengersString += passenger.toString() + "\n";
+        }
+        return passengersString;
+    }
+
+    @Override
+    public String toString(){
+        return BusID + " is the bus id";
+    }
+}
+public class Person {
+    private String name;
+    private int TicketNumber;
+    private static int NextTicketNumber;
+
+
+    public Person(){
+        name = "No Name";
+        TicketNumber = NextTicketNumber;
+        NextTicketNumber++;
+    }
+
+    public Person(String Name){
+        name = Name;
+        TicketNumber = NextTicketNumber;
+        NextTicketNumber++;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public String toString(){
+        return TicketNumber + "\t" + name;
+    }
+}
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+
+
+        Dispatcher busQueue = new Dispatcher();
+
+        int choice;
+
+        do {
+            System.out.print("Bus Dispatching System\n\n" +
+                    "1. Add bus\n" +
+                    "2. Add Person to bus\n" +
+                    "3. Remove bus\n" +
+                    "4. Remove person\n" +
+                    "5. List passengers\n" +
+                    "6. List busses\n" +
+                    "7. Requeue bus\n" +
+                    "8. Transfer person\n" +
+                    "9. Dispatch bus\n" +
+                    "0. Exit\n");
+
+            choice = scan.nextInt();
+
+            if (choice == 1){
+                Bus bus = new Bus();
+                busQueue.addBus(bus);
+                System.out.println("Bus "+ bus.getBusID() + " added to position " + bus.getBusID());
+            }
+
+            if (choice == 2){
+                System.out.println("Enter bus id: ");
+                int id = scan.nextInt();
+                busQueue.findBus(id);
+                if (busQueue.findBus(id) == null)
+                    System.out.println("No Bus with id " + id);
+                else
+                    System.out.println("Enter person's name: ");
+                String SKIP = scan.nextLine();
+                Person person = new Person(scan.nextLine());
+                busQueue.findBus(id).AddPerson(person);
+                System.out.println( person.getName() + " has been added to bus " + id);
+            }
+
+            if (choice == 3){
+                System.out.println("Enter bus id: ");
+                int id = scan.nextInt();
+                busQueue.findBus(id);
+                if (busQueue.findBus(id) == null)
+                    System.out.println("No Bus with id " + id);
+                else
+                    busQueue.removeBus(id);
+                System.out.println("Bus " + id + " removed" );
+            }
+
+            if (choice == 4){
+                System.out.println("Enter bus id: ");
+                int id = scan.nextInt();
+                busQueue.findBus(id);
+                if (busQueue.findBus(id) == null)
+                    System.out.println("No Bus with id " + id);
+                else
+                    System.out.println("Enter person's name: ");
+                String SKIP = scan.nextLine();
+                String person = scan.nextLine();
+                busQueue.findBus(id).removeperson(busQueue.findBus(id).findPerson(person));
+
+            }
+
+            if (choice == 5){
+                System.out.println("Enter bus id: ");
+                int id = scan.nextInt();
+                busQueue.findBus(id);
+                if (busQueue.findBus(id) == null)
+                    System.out.println("No Bus with id " + id);
+                else
+                    System.out.println("Bus\n " + id + busQueue.findBus(id).getPassengers());
+            }
+
+            if (choice == 6){
+                System.out.println("BUS QUEUE\n" + busQueue);
+            }
+
+            if (choice == 7){
+                System.out.println("Enter bus id: ");
+                int id = scan.nextInt();
+                busQueue.findBus(id);
+                if (busQueue.findBus(id) == null)
+                    System.out.println("No Bus with id " + id);
+                else
+                    System.out.println("Enter new bus position: ");
+                int position = scan.nextInt();
+                busQueue.addBus(busQueue.findBus(id), position);
+
+                System.out.println("Bus "+ id + " added to position " + position);
+            }
+
+            if (choice == 8){
+                System.out.println("Enter person's name: ");
+                String SKIP = scan.nextLine();
+                String person = scan.nextLine();
+                System.out.println("Enter id of bus 1: ");
+                int bus1 = scan.nextInt();
+                System.out.println("Enter id of bus 2: ");
+                int bus2 = scan.nextInt();
+
+                busQueue.findBus(bus1).findPerson(person);
+                if (busQueue.findBus(bus1) == null)
+                    System.out.println("No Bus with id " + bus1);
+                if (busQueue.findBus(bus1).findPerson(person) == null)
+                    System.out.println("No person named " + person);
+                else
+                    busQueue.findBus(bus1).transferPerson(busQueue.findBus(bus1),busQueue.findBus(bus2),
+                            busQueue.findBus(bus1).findPerson(person));
+
+                System.out.println("Person transferred successfully.");
+            }
+
+            if (choice == 9){
+                busQueue.dispatchBus();
+            }
+
+        }while (choice != 0);
+    }
+}
