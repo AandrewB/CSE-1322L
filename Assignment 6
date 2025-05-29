@@ -1,0 +1,142 @@
+public class Complaint {
+    String causeOfAction, plaintiffCitizenship, defendandCitizenship, OriginalStateOfFilling;
+    double amountInControversy;
+    int id;
+    int NextID = 1;
+
+    public String getCauseOfAction() {
+        return causeOfAction;
+    }
+    public String getPlaintiffCitizenship() {
+        return plaintiffCitizenship;
+    }
+    public String getDefendandCitizenship() {
+        return defendandCitizenship;
+    }
+    public String getOriginalStateOfFilling() {
+        return OriginalStateOfFilling;
+    }
+    public double getAmountInControversy() {
+        return amountInControversy;
+    }
+    public int getId() {
+        return id;
+    }
+    public Complaint(String action, double amount,String plaintiff, String defendand, String filling){
+        id = NextID;
+        NextID++;
+        causeOfAction = action;
+        plaintiffCitizenship = plaintiff;
+        defendandCitizenship = defendand;
+        OriginalStateOfFilling = filling;
+        amountInControversy = amount;
+    }
+}
+public class StateComplaintException extends Exception {
+    public StateComplaintException(String message){
+        super(message);
+    }
+}
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+public class main {
+    public static void processComplaint(Complaint c) throws StateComplaintException {
+        if (!c.getCauseOfAction().equals("Equal Protection Challenge") ||
+                !c.getCauseOfAction().equals("Title IX Workplace Discrimination") ||
+                !c.getCauseOfAction().equals("Prisoner Civil Rights Claim") ||
+                !c.getCauseOfAction().equals("Fair Labor Standard Act Claim"))
+        {
+            if (c.getPlaintiffCitizenship().equals(c.getDefendandCitizenship())){
+                throw new StateComplaintException("Lack of Diversity");
+            }
+            if (c.getAmountInControversy() <= 75000){
+                throw new StateComplaintException("Amount in controversy less than or equal to $75000");
+            }
+            if (c.getDefendandCitizenship().equals(c.getOriginalStateOfFilling())){
+                throw new StateComplaintException("No prejudice through diversity");
+            }
+
+        }
+
+
+    }
+    public static void main(String[] args)  {
+        Scanner scan = new Scanner(System.in);
+
+        int N = 0;
+        int N2 = 0;
+
+        System.out.print("[Federal Court Complaint Processor]\n");
+        System.out.print("Enter file name to process: ");
+        try {
+            String File = scan.nextLine();
+            File cases = new File("C:/Users/andre/Downloads/sample (2)/" + File + ".txt");
+            Scanner S_File = new Scanner(cases);
+            String line = " ";
+            String [] parts;
+
+
+            File Acc = new File("C:/Users/andre/Downloads/sample (2)/accepted.txt");
+            PrintWriter copy = new PrintWriter(Acc);
+            File Rem = new File("C:/Users/hollo/Downloads/sample (2)/remanded.txt");
+            PrintWriter copy2 = new PrintWriter(Rem);
+
+
+            while (S_File.hasNextLine()) {
+
+                line = S_File.nextLine();
+                parts = line.split(",");
+
+                String A = parts[0];
+                double num = Integer.parseInt(parts[1]);
+                String B = parts[2];
+                String C = parts[3];
+                String D = parts[4];
+
+                Complaint Case = new Complaint(A,num,B,C,D);
+
+                try {
+                    processComplaint(Case);
+                    copy.print("Case ID: " + Case.getId() + "\n" +
+                            "Cause of action: " + Case.getCauseOfAction() + "\n" +
+                            "Amount in Controversy: $" + Case.getAmountInControversy() + "\n" +
+                            "Plaintiff’s Citizenship: " + Case.getPlaintiffCitizenship() + "\n" +
+                            "Defendant’s Citizenship: " + Case.getDefendandCitizenship() + "\n" +
+                            "Originally filled in: " + Case.getOriginalStateOfFilling() + "\n");
+                    N+=1;
+                }
+                catch (StateComplaintException X){
+
+                    copy2.println("Case ID: " + Case.getId() + "\n" +
+                            "Cause of action: " + Case.getCauseOfAction() + "\n" +
+                            "Amount in Controversy: $" + Case.getAmountInControversy() + "\n" +
+                            "Plaintiff’s Citizenship: " + Case.getPlaintiffCitizenship() + "\n" +
+                            "Defendant’s Citizenship: " + Case.getDefendandCitizenship() + "\n" +
+                            "Originally filled in: " + Case.getOriginalStateOfFilling() + "\n" + "Reason for remand: " +
+                            X.getMessage());
+                    N2+=1;
+                }
+
+            }
+            copy.close();
+            copy2.close();
+
+
+            System.out.print("Processing complete. Accepted cases written to accepted.txt and remanded cases written to\n" +
+                    "remanded.txt\n" +
+                    "Number of remanded cases: " + N2 + "\n" +
+                    "Number of accepted cases: " + N + "\n");
+
+        }
+        catch (FileNotFoundException e){
+            System.out.print("File Not Found\n");
+        }
+        finally {
+
+            System.out.print("Shutting down...");
+        }
+    }
+}
