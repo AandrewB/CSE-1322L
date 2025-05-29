@@ -1,0 +1,162 @@
+public class Account {
+    private int Account_Num;
+    private static int next_Account_Num = 10001;
+    private double Account_Balance;
+
+
+    public Account(){
+        Account_Num = next_Account_Num;
+        next_Account_Num++;
+        Account_Balance = 0;
+    }
+
+    public Account(double Amount){
+        Account_Num = next_Account_Num;
+        next_Account_Num++;
+        Account_Balance = Amount;
+    }
+    public int getAccount_Num(){
+        return Account_Num;
+    }
+    public double getAccount_Balance(){
+        return Account_Balance;
+    }
+    public void setAccount_Balance(double new_Balance){
+        Account_Balance = new_Balance;
+    }
+    public void Withdrawal(double Amount){
+        Account_Balance = Account_Balance - Amount;
+    }
+    public void Deposit(double Amount){
+        Account_Balance = Account_Balance + Amount;
+    }
+
+}
+public class Checking extends Account{
+
+    public Checking(double Amount){
+        super(Amount);
+    }
+
+    @Override
+    public void Withdrawal(double Amount) {
+        super.Withdrawal(Amount);
+        if (getAccount_Balance() < 0){
+            System.out.println("Charging an overdraft fee of $20 " +
+                    "because account is below $0");
+            double new_Balance = getAccount_Balance()- 20;
+            setAccount_Balance(new_Balance);
+        }
+    }
+
+}
+public class Savings extends Account{
+
+    private static int counter = 0;
+
+
+    public Savings (double Amount){
+        super(Amount);
+    }
+
+    @Override
+    public void Withdrawal(double Amount){
+        super.Withdrawal(Amount);
+
+        if (getAccount_Balance() < 500){
+            System.out.println("Charging a fee of $10 because you are\n" +
+                    "below $500");
+            double new_Balance = getAccount_Balance() - 10;
+            setAccount_Balance(new_Balance);
+        }
+    }
+
+    @Override
+    public void Deposit(double Amount){
+        super.Deposit(Amount);
+        counter++;
+        if (counter > 4){
+            System.out.println(" Charging a fee of $10 ");
+            double new_Balance = getAccount_Balance() - 10;
+            setAccount_Balance(new_Balance);
+
+        }
+
+    }
+
+    public void Interest(){
+        double Rate = getAccount_Balance() / 100 * 1.5;
+        System.out.println("Customer earned " + Rate + " in interest");
+
+        double new_Balance = getAccount_Balance() + Rate;
+        setAccount_Balance(new_Balance);
+    }
+
+}
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner Scan = new Scanner(System.in);
+
+        int Choice;
+
+        Account new_Account = new Account();
+        Checking new_Che = new Checking(0);
+        Savings new_Sav = new Savings(0);
+
+        do {
+
+            System.out.print("1. Withdraw from Checking\n" +
+                    "2. Withdraw from Savings\n" +
+                    "3. Deposit to Checking\n" +
+                    "4. Deposit to Savings\n" +
+                    "5. Balance of Checking\n" +
+                    "6. Balance of Savings\n" +
+                    "7. Award Interest to Savings now\n" +
+                    "8. Quit\n");
+
+            Choice = Scan.nextInt();
+
+            if (Choice == 1){
+                System.out.println("How much would you like to withdraw from Checking");
+                double Amount = Scan.nextDouble();
+                new_Che.Withdrawal(Amount);
+            }
+
+            if (Choice == 2){
+                System.out.println("How much would you like to withdraw from Saving");
+                double Amount = Scan.nextDouble();
+                new_Sav.Withdrawal(Amount);
+            }
+
+            if (Choice == 3){
+                System.out.println("How much would you like to deposit from Checking");
+                double Amount = Scan.nextDouble();
+                new_Che.Deposit(Amount);
+            }
+
+            if (Choice == 4){
+                System.out.println("How much would you like to deposit from Saving");
+                double Amount = Scan.nextDouble();
+                new_Sav.Deposit(Amount);
+            }
+
+            if (Choice == 5){
+                System.out.println("Your balance for Checking " + new_Che.getAccount_Num() + " is " +
+                        new_Che.getAccount_Balance());
+            }
+
+            if (Choice == 6){
+                System.out.println("Your balance for Savings " + new_Sav.getAccount_Num() + " is " +
+                        new_Sav.getAccount_Balance());
+            }
+
+            if (Choice == 7){
+                new_Sav.Interest();
+                System.out.println("Customer earned " + new_Sav.getAccount_Balance());
+            }
+
+        }while (Choice != 8);
+    }
+}
