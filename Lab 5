@@ -1,0 +1,128 @@
+public class Book extends Item {
+    private int isbn_number;
+    private String author;
+
+    public Book(){
+        isbn_number = 0;
+        author = "";
+    }
+
+    public Book(String open, int number, String writer){
+        super(open);
+        isbn_number = number;
+        author = writer;
+    }
+
+    public int getIsbn_number() {
+        return isbn_number;
+    }
+    public int setIsbn_number(int number){
+        isbn_number = number;
+        return isbn_number;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+    public String setAuthor(String writer){
+        author = writer;
+        return author;
+    }
+
+    @Override
+    public String getListing() {
+        return "Book Name - " + getTitle() + "\n" + "Author - " + getAuthor() + "\n" + "ISBN# - " + getIsbn_number();
+    }
+}
+abstract public class Item {
+    private String title;
+
+    public Item() {
+        title = "";
+    }
+
+    public Item(String open) {
+        title = open;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String new_title) {
+        title = new_title;
+    }
+
+    abstract public String getListing();
+
+
+    public String toString() {
+        return getTitle();
+    }
+}
+ public class Periodical extends Item {
+    private int issueNum;
+
+    public Periodical(){
+        issueNum = 0;
+    }
+    public Periodical(String open, int period){
+        super(open);
+        issueNum = period;
+    }
+
+    public int getIssueNum() {
+        return issueNum;
+    }
+    public int setIssueNum(int issue){
+        issueNum = issue;
+        return issueNum;
+    }
+
+    @Override
+    public String getListing() {
+        return "Periodical Title - " + getTitle() + "\n" + "Issue# - " + getIssueNum();
+    }
+
+}
+import java.util.Scanner;
+
+public class myCollection {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+
+        Item[] items = new Item[5];
+
+        
+        for(int i=0 ;i<5; i++)
+        {
+            System.out.println("Please enter B for Book or P for Periodical");
+            char choice = scan.nextLine().charAt(0);
+            if(choice == 'B')
+            {
+                System.out.println("Please enter the name of the Book");
+                String name = scan.nextLine();
+                System.out.println("Please enter the author of the Book");
+                String author = scan.nextLine();
+                System.out.println("Please enter the ISBN of the Book");
+                int isbn = scan.nextInt();
+                items[i] = new Book(name, isbn, author);
+            }
+            if (choice == 'P')
+            {
+                System.out.println("Please enter the name of the Periodical");
+                String name = scan.nextLine();
+                System.out.println("Please enter the issue number");
+                int issueNumber = scan.nextInt();
+                items[i] = new Periodical(name, issueNumber);
+            }
+            scan.nextLine();
+        }
+
+        System.out.println("Your Items:");
+        for(int i=0; i<5; i++)
+        {
+            System.out.println(items[i].getListing() + "\n");
+        }
+    }
+}
