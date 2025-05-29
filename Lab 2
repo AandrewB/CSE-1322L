@@ -1,0 +1,133 @@
+public class StockItem{
+
+    private String description;
+    private int id;
+    private static int nextID =0;
+    private double price;
+    private int quantity;
+
+
+
+    public StockItem(){
+        description= "hello";
+        price=0;
+        id = nextID;
+        nextID++;
+        quantity=0;
+    }
+
+    public StockItem(String desc, double money, int items) {
+        description = desc;
+        price = money;
+        quantity = items;
+        id = nextID;
+        nextID++;
+    }
+
+
+    public double getPrice(){
+        return price;
+    }
+    public void setPrice(double NewPrice){
+       price = NewPrice;
+       if (price < 0){
+           System.out.println("error");
+       }
+    }
+
+    public String getDescription(){
+        return description;
+    }
+
+    public int getID(){
+        return id;
+    }
+
+    public int getQuantity(){
+        return quantity;
+    }
+
+    public void LowerQuantity(){
+        quantity = quantity - 1;
+        if(quantity < 0){
+            System.out.println("error");
+        }
+    }
+
+    public void RaiseQuantity(int NewHigh){
+        quantity = quantity + NewHigh;
+    }
+
+
+    public String toString(){
+        return "Item number: " + id + " is " + description +" has price " + price +" we currently have " + quantity + " in stock";
+    }
+}
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        StockItem milk = new StockItem("1 Gallon of Milk", 3.60,15);
+        StockItem bread = new StockItem("1 Loaf of Bread", 1.98, 30);
+
+        Scanner scan = new Scanner(System.in);
+        int choice;
+
+
+        do {
+
+            System.out.print("1. Sold One Milk\n" +
+                    "2. Sold One Bread\n" +
+                    "3. Change price of Milk\n" +
+                    "4. Change price of Bread\n" +
+                    "5. Add Milk to Inventory\n" +
+                    "6. Add Bread to Inventory\n" +
+                    "7. See Inventory\n" +
+                    "8. Quit\n");
+
+            choice = scan.nextInt();
+            if(choice==1){
+                milk.LowerQuantity();
+            }
+
+            if(choice==2){
+                bread.LowerQuantity();
+            }
+
+            if(choice==3){
+                System.out.println("What is the New price for Milk");
+                double NewPrice = scan.nextDouble();
+                milk.setPrice(NewPrice);
+            }
+
+            if(choice==4){
+                System.out.println("What is the New price for Bread");
+                double NewPrice = scan.nextDouble();
+                bread.setPrice(NewPrice);
+
+            }
+
+            if(choice==5){
+                System.out.println("How much milk did we get?");
+                int NewHigh = scan.nextInt();
+                milk.RaiseQuantity(NewHigh);
+
+            }
+
+            if(choice==6){
+                System.out.println("How much bread did we get?");
+                int NewHigh = scan.nextInt();
+                bread.RaiseQuantity(NewHigh);
+
+            }
+
+            if(choice==7){
+                System.out.println("Milk: " + milk + "\n" + "Bread: " + bread);
+
+            }
+        }
+                while (choice!=8);
+
+
+    }
+}
