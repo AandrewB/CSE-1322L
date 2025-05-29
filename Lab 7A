@@ -1,0 +1,81 @@
+import java.util.Scanner;
+
+public class Lab7A {
+    public static void main(String[] args) {
+        Scanner s = new Scanner(System.in);
+        int choice;
+
+        do {
+            System.out.print("\nChoose from the following:\n" +
+                    "0. Quit\n" +
+                    "1. Multiply 2 numbers\n" +
+                    "2. Div 2 numbers\n" +
+                    "3. Mod 2 numbers \n");
+            choice = s.nextInt();
+
+            if (choice == 1){
+                System.out.print("Enter first number: ");
+                int first = s.nextInt();
+                System.out.print("Enter second number: ");
+                int second = s.nextInt();
+
+                int mult = recursive_multiply(first, second);
+                System.out.print("Answer: " + mult);
+            }
+            if (choice == 2){
+                System.out.print("Enter first number: ");
+                int first = s.nextInt();
+                System.out.print("Enter second number: ");
+                int second = s.nextInt();
+
+                int div = recursive_div(first,second);
+                System.out.print("Answer: " + div);
+            }
+            if (choice == 3){
+                System.out.print("Enter first number: ");
+                int first = s.nextInt();
+                System.out.print("Enter second number: ");
+                int second = s.nextInt();
+
+                int mod = recursive_mod(first,second);
+                System.out.print("Answer: " + mod);
+            }
+        }while (choice !=0);
+    }
+    public static int recursive_multiply(int x, int y){
+        if (x == 0 || y== 0){
+            return 0;
+        }
+        else return x + recursive_multiply(x, y-1);
+    }
+
+    public static int recursive_div(int x, int y){
+        int counter = 1;
+        if ( x < y){
+            return 0;
+        }
+        if (x == 0 || y == 0){
+            return -1;
+        }
+        if (x==y){
+            return 1;
+        }
+
+        else
+            counter++;
+            recursive_div(x-y,y);
+
+            return counter;
+    }
+
+    public static int recursive_mod(int x, int y){
+        if (x== 0 || y == 0){
+            return -1;
+        }
+        if (x<y){
+            return x;
+        }
+        else
+            return  recursive_mod(x-y,y);
+    }
+}
