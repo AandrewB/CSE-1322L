@@ -1,0 +1,107 @@
+public class Employee extends Thread{
+    private TheDrum pallet;
+    private int totalJasmine;
+    private int totalEarlGrey;
+    private int totalLemon;
+    private int id;
+    private static int nextId = 0;
+    public Employee(TheDrum drum) {
+        this.pallet = drum;
+        totalJasmine = 0;
+        totalEarlGrey = 0;
+        totalLemon = 0;
+        id = nextId++;
+    }
+    public int totalTea() {
+        return totalJasmine + totalEarlGrey + totalLemon;
+    }
+    public void run() {
+        TeaBox nextTeaBox = pallet.getNextTeaBox();
+        while (nextTeaBox != null) {
+            if (nextTeaBox.getTeaType() == "Jasmine") {
+                totalJasmine++;
+            }
+            if (nextTeaBox.getTeaType() == "EarlGrey") {
+                totalEarlGrey++;
+            }
+            if (nextTeaBox.getTeaType() == "Lemon") {
+                totalLemon++;
+            }
+            nextTeaBox = pallet.getNextTeaBox();
+        }
+    }
+    public String toString() {
+        return "Employee " + id + " has unloaded " + totalJasmine + " boxes of Jasmine Tea, " + totalEarlGrey +
+                " boxes of Earl Grey Tea, and " + totalLemon + " boxes of Lemon Tea.";
+    }
+}
+public class TeaBox {
+    private String teaType;
+    private TeaBox nextTea;
+
+    public TeaBox(String teaType, TeaBox nextTea) {
+        this.nextTea = nextTea;
+        this.teaType = teaType;
+    }
+
+    public String getTeaType() {
+        return teaType;
+    }
+    public TeaBox getNextTea() {
+        return nextTea;
+    }
+}
+public class TheDrum {
+    private TeaBox nextTeaBox = null;
+
+    public TheDrum(int Jasmine, int Earl, int Lemon) {
+
+        for (int i = 0; i< Jasmine; i++) {
+            nextTeaBox = new TeaBox("Jasmine", nextTeaBox);
+        }
+        for (int i = 0; i < Earl; i++) {
+            nextTeaBox = new TeaBox("EarlGrey", nextTeaBox);
+        }
+        for (int i = 0; i < Lemon; i++) {
+            nextTeaBox = new TeaBox("Lemon", nextTeaBox);
+        }
+    }
+    public TeaBox getNextTeaBox() {
+        TeaBox result = nextTeaBox;
+        if (result != null) {
+            nextTeaBox = nextTeaBox.getNextTea();
+        }
+        return result;
+    }
+}
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        Scanner scan = new Scanner(System.in);
+        System.out.print("How many boxes of Jasmine Tea would you like to order? ");
+        int a = scan.nextInt();
+        System.out.print("How many boxes of Earl Grey Tea would you like to order? ");
+        int b = scan.nextInt();
+        System.out.print("How many boxes of Lemon Tea would you like to order? ");
+        int c = scan.nextInt();
+
+        TheDrum drum = new TheDrum(a,b,c);
+        System.out.println("The Drum™ has been created and shipped.");
+        System.out.print("How many employees will help unload? ");
+        int d = scan.nextInt();
+        Employee[] employeeList = new Employee[d];
+        for (int i = 0; i < d; i++) {
+            Employee employee = new Employee(drum);
+            employeeList[i] = employee;
+            employee.start();
+        }
+        int total = 0;
+        for (int i = 0; i < d; i++) {
+            employeeList[i].join();
+            System.out.println(employeeList[i].toString());
+            total += employeeList[i].totalTea();
+        }
+        System.out.println("A total of " + total + " boxes of tea were stocked.");
+    }
+}
