@@ -1,0 +1,38 @@
+import java.util.Scanner;
+import java.io.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("What is the first file name? ");
+        String file = scan.next();
+        System.out.println("What is the second file name? ");
+        String twoFile = scan.next();
+        try{
+        File file1 = new File(file);
+        File file2 = new File(twoFile);
+        Scanner firstScan = new Scanner(file1);
+        Scanner secScan = new Scanner(file2);
+        String oneLine = "";
+        String twoLine = "";
+        int count = 0;
+        while (firstScan.hasNextLine() && secScan.hasNextLine()){
+            oneLine = firstScan.nextLine();
+            twoLine= secScan.nextLine();
+            count++;
+            }
+
+        if (!oneLine.equals(twoLine)){
+                System.out.println("Line " + count);
+                System.out.println("< "+ oneLine + "\n> " + twoLine);
+            }
+            if (oneLine.length() < twoLine.length() || oneLine.length() > twoLine.length()){
+                System.out.println("Files have different number of lines");
+            }
+
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+}
