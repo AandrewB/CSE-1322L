@@ -1,0 +1,202 @@
+public interface IAudioStandard extends IMediaStandard {
+    public String getAudioCodec();
+}
+public interface IImageStandard extends IMediaStandard{
+    public String getImageCodec();
+}
+public interface IMediaStandard {
+    public String getMediaInfo();
+}
+public class Image extends Media implements IImageStandard {
+    private String imageCodec;
+
+    public Image(String name, String image){
+        super(name);
+        imageCodec = image;
+    }
+
+    @Override
+    public String getImageCodec() {
+        return "Image codec: " + imageCodec;
+    }
+
+    @Override
+    public String getMediaInfo() {
+        return "Image ID: " + getId() + "\n" + "Image name: " + getFileName() + "\n" +  getImageCodec();
+    }
+}
+public abstract class Media {
+    private String fileName;
+    private int id;
+    private static int nextId;
+
+    public Media(){
+        id = nextId;
+        nextId++;
+    }
+
+    public Media(String name){
+        fileName = name;
+        id = nextId;
+        nextId++;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+    public int getId() {
+        return id;
+    }
+}
+public class Music extends Media implements IAudioStandard{
+    private String audioCodec;
+
+    public Music(String name, String audio){
+        super(name);
+        audioCodec = audio;
+    }
+
+    @Override
+    public String getAudioCodec() {
+        return "Audio codec: " + audioCodec;
+    }
+
+    @Override
+    public String getMediaInfo() {
+        return "Music ID: " + getId() + "\n" + "Music name: " + getFileName() + "\n" + getAudioCodec();
+    }
+}
+public class Video extends Media implements IAudioStandard, IImageStandard {
+    private String imageCodec;
+    private String audioCodec;
+
+    public Video(String name, String audio, String image){
+        super(name);
+        imageCodec = image;
+        audioCodec = audio;
+    }
+
+    @Override
+    public String getImageCodec() {
+        return "Image codec: " + imageCodec;
+    }
+
+    @Override
+    public String getAudioCodec() {
+        return "Audio codec: " + audioCodec;
+    }
+
+    @Override
+    public String getMediaInfo() {
+        return "Video ID: " + getId() + "\n" + "Video name: " + getFileName() + "\n" + "Image Codec: " + getImageCodec() + "\n" + getAudioCodec();
+    }
+}
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        int choice;
+        String name, image, audio, na;
+
+        ArrayList <Media> allMedia = new ArrayList<>();
+        System.out.println("[Media Manager]\n");
+
+
+        do{
+            System.out.print("\n1- Add Image\n" +
+                    "2- Add Music\n" +
+                    "3- Add Video\n" +
+                    "4- Show images\n" +
+                    "5- Show music\n" +
+                    "6- Show videos\n" +
+                    "7- Show images and videos\n" +
+                    "8- Show music and videos\n" +
+                    "9- Exit\n" +
+                    "Enter option: ");
+            choice = scan.nextInt();
+
+            if (choice == 1){
+                System.out.print("\nEnter file name: ");
+                na = scan.nextLine();
+                name = scan.nextLine();
+                System.out.print("Enter image codec: ");
+                image = scan.nextLine();
+
+                Image im = new Image(image,name);
+                allMedia.add(im);
+
+
+            }
+
+            if (choice == 2){
+                System.out.print("\nEnter file name: ");
+                na = scan.nextLine();
+                name = scan.nextLine();
+                System.out.print("Enter audio codec: ");
+                audio = scan.nextLine();
+
+                Music ad = new Music(name, audio);
+                allMedia.add(ad);
+
+            }
+
+            if (choice == 3){
+                System.out.print("\nEnter file name: ");
+                na = scan.nextLine();
+                name = scan.nextLine();
+                System.out.print("Enter image codec: ");
+                image = scan.nextLine();
+                System.out.print("Enter audio codec: ");
+                audio = scan.nextLine();
+
+                Video vid = new Video(name, image, audio);
+                allMedia.add(vid);
+            }
+
+            if (choice == 4){
+                for (int i = 0; allMedia.size() > i ;i++ ){
+                     if (allMedia.get(i) instanceof Image){
+                         System.out.println(((Image) allMedia.get(i)).getMediaInfo());
+                     }
+                }
+            }
+
+            if (choice == 5){
+                for (int i = 0; allMedia.size() > i ;i++ ){
+                    if (allMedia.get(i) instanceof Music){
+                        System.out.println(((Music) allMedia.get(i)).getMediaInfo());
+                    }
+                }
+            }
+
+            if (choice == 6){
+                for (int i = 0; allMedia.size() > i ;i++ ){
+                    if (allMedia.get(i) instanceof Video){
+                        System.out.println(((Video) allMedia.get(i)).getMediaInfo());
+                    }
+                }
+            }
+
+            if (choice == 7){
+                for (int i = 0; allMedia.size() > i ;i++ ){
+                    if (allMedia.get(i) instanceof Image || allMedia.get(i) instanceof Video){
+                        System.out.println(((IImageStandard) allMedia.get(i)).getMediaInfo());
+                    }
+                }
+            }
+
+            if (choice == 8){
+                for (int i = 0; allMedia.size() > i ;i++ ){
+                    if (allMedia.get(i) instanceof Music || allMedia.get(i) instanceof Video){
+                        System.out.println(((IAudioStandard) allMedia.get(i)).getMediaInfo());
+                    }
+                }
+            }
+
+        }while (choice != 9);
+        System.out.println("\nShutting down...");
+    }
+}
