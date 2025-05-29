@@ -1,0 +1,172 @@
+public class Order {
+    private int Order_ID;
+    private static int Available_ID=1;
+    public boolean ready;
+    public String[] items;
+
+
+    public Order(){
+        Order_ID=Available_ID;
+        Available_ID++;
+        ready=false;
+        items= new String[3];
+    }
+    public Order(String []amount){
+        items = amount;
+        Order_ID=Available_ID;
+        Available_ID++;
+        ready=false;
+    }
+
+    public int getID(){
+        return Order_ID;
+    }
+    public String toString(){
+        return "Order number" + Order_ID + "\n" + ready + "\n" + items + "\n";
+    }
+}
+public class OrderList {
+    private Order[] orderList = new Order[5];
+    public void addOrder(Order order){
+        for(int i = 0; i < orderList.length; i++){
+            if(orderList[i] == null){
+                orderList[i] = order;
+                break;
+            }
+            if ( i == orderList.length - 1){
+                Order[] newOrderList = new Order[orderList.length * 2];
+                for(int j = 0; j < orderList.length; j++){
+                    newOrderList[j] = orderList[j];
+                }
+                int length = orderList.length;
+                orderList = newOrderList;
+                orderList[length] = order;
+            }
+        }
+    }
+    public void removeOrder (int id){
+        for (int i = 0; i < orderList.length; i++){
+            if (orderList[i] != null && orderList[i].getID() == id){
+                orderList[i] = null;
+            }
+        }
+    }
+    public void readyOrder(int id) {
+        for (int i = 0; i < orderList.length; i++) {
+            if (orderList[i] != null && orderList[i].getID() == id) {
+                orderList[i].ready = true;
+            }
+        }
+    }
+    private void sortOrders() {
+        for (int i = 0; i < orderList.length; i++) {
+            int minIndex = i;
+            for ( int j = i; j < orderList.length; j++) {
+                if(orderList[j] != null && orderList[j].getID() < orderList[minIndex].getID()) {
+                    minIndex = j;
+                }
+            }
+            Order temp = orderList[i];
+            orderList[i] = orderList[minIndex];
+            orderList[minIndex] = temp;
+        }
+    }
+    public String printOrder(int id) {
+        for (int i = 0; i < orderList.length; i++) {
+            if (orderList[i] != null && orderList[i].getID() == id) {
+                return orderList[i].toString();
+            }
+        }
+        return "";
+    }
+    public String printOrders(){
+        String result = "";
+        sortOrders();
+        result += "Ready\n";
+        for (int i = 0; i < orderList.length; i++ ) {
+            if(orderList[i] != null && orderList[i].ready) {
+                result += orderList[i].toString() + "\n";
+            }
+        }
+        result += "Preparing\n";
+        for (int i = 0; i < orderList.length; i++ ) {
+            if(orderList[i] != null && !orderList[i].ready) {
+                result += orderList[i].toString() + "\n";
+            }
+        }
+        return result;
+    }
+}
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        OrderList restaurantOrders = new OrderList();
+        Scanner scan = new Scanner(System.in);
+        int choice;
+        System.out.println("FastFood World Order Tracker\n");
+
+        do{
+            System.out.print("Please select a menu option:\n" +
+                    "1- Create order\n" +
+                    "2- Delete order\n" +
+                    "3- Ready order\n" +
+                    "4- Print order\n" +
+                    "5- Print all orders\n" +
+                    "6- Exit");
+            choice = scan.nextInt();
+            scan.nextLine();
+            if (choice==1){
+                String[] OrderItems = new String[3];
+                for (int i = 0; i< 3; i++){
+                    System.out.print("Enter item " + (i + 1) + ":");
+                    String item = scan.nextLine();
+                    OrderItems[i] = item;
+                }
+                restaurantOrders.addOrder(new Order(OrderItems));
+                System.out.print("Order has been added.");
+
+            }
+
+            if (choice==2){
+                System.out.print("Please enter order ID: ");
+                int OrderID = scan.nextInt();;
+                restaurantOrders.removeOrder(OrderID);
+                System.out.print("Order has been removed.");
+
+            }
+
+            if (choice==3){
+                System.out.print("Please enter order ID: ");
+                int ID = scan.nextInt();
+                restaurantOrders.readyOrder(ID);
+                System.out.println("Order has been set to \"Ready\".");
+
+            }
+
+            if (choice==4){
+                System.out.print("Please enter order ID: ");
+                int ID = scan.nextInt();
+                String result = restaurantOrders.printOrder(ID);
+                if (result != " "){
+                    System.out.print(result);
+                }
+                else {
+                    System.out.print("No order with such ID.");
+                }
+
+
+            }
+
+            if (choice ==5){
+                System.out.println(restaurantOrders.printOrders());
+            }
+
+
+        }
+        while (choice !=6);
+        System.out.print("Shutting off...");
+    }
+
+}
+
