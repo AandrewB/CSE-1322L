@@ -1,0 +1,110 @@
+import java.util.Scanner;
+
+public class DNALib {
+    public static boolean validator(String dna) {
+        if (dna.isEmpty()) {
+            return false;
+        }
+
+        if (dna.length() % 3 != 0) {
+            return false;
+        }
+
+        if (!dna.matches("[ACGT]+")) {
+            return false;
+        }
+
+        return validator(dna.substring(3));
+    }
+
+    public static String reverser(String dna) {
+
+        if (dna.isEmpty()) {
+            return "";
+        }
+
+        return reverser(dna.substring(1)) + dna.charAt(0);
+    }
+
+    public static String inverser(String dna) {
+
+        if (dna.isEmpty()) {
+            return "";
+        }
+        char firstChar = dna.charAt(0);
+        char complementChar;
+
+        switch (firstChar) {
+            case 'A':
+                complementChar = 'T';
+                break;
+            case 'T':
+                complementChar = 'A';
+                break;
+            case 'C':
+                complementChar = 'G';
+                break;
+            case 'G':
+                complementChar = 'C';
+                break;
+            default:
+
+                complementChar = ' ';
+        }
+
+        return inverser(dna.substring(1)) + complementChar;
+    }
+
+    public static String translator(String dna) {
+
+        if (dna.isEmpty()) {
+            return "";
+        }
+
+        String codon = dna.substring(0, 3);
+        String aminoAcid;
+        switch (codon) {
+            case "GCA":
+            case "GCC":
+            case "GCG":
+            case "GCT":
+                aminoAcid = "A";
+                break;
+            case "TGC":
+            case "TGT":
+                aminoAcid = "C";
+                break;
+            case "GAC":
+            case "GAT":
+                aminoAcid = "D";
+                break;
+            case "GAA":
+            case "GAG":
+                aminoAcid = "E";
+                break;
+            case "TTC":
+            case "TTT":
+                aminoAcid = "F";
+                break;
+
+            default:
+
+                aminoAcid = "?";
+        }
+        return aminoAcid + translator(dna.substring(3));
+    }
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("[DNA Reverser and Translator]");
+        System.out.print("Enter a sequence: ");
+        String input = scanner.nextLine().toUpperCase();
+        if (validator(input)) {
+            String reversed = reverser(input);
+            String inversed = inverser(reversed);
+            String translated = translator(inversed);
+            System.out.println("Your DNA sequence reversed and translated is: " + translated);
+        } else {
+            System.out.println("Your DNA sequence is not valid.");
+        }
+    }
+}
