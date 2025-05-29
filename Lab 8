@@ -1,0 +1,62 @@
+public class InvalidTimeException extends Exception {
+        public InvalidTimeException(String message) {
+            super(message);
+        }
+}
+import java.util.Scanner;
+
+public class Main {
+    public static int timeFormat (String time) throws InvalidTimeException {
+        String[] format = time.split(":", 3);
+
+        if (format.length < 3){
+            throw new InvalidTimeException("Enter a valid time");
+        }
+
+            int hours = Integer.parseInt(format[0]);
+            if (hours > 23 || hours < 0){
+                throw new InvalidTimeException("Hour must be below 24");
+            }
+
+            int minutes = Integer.parseInt(format[1]);
+            if (minutes >59 || minutes < 0){
+                throw new InvalidTimeException("Minutes must be less than 60");
+            }
+
+            int seconds = Integer.parseInt(format[2]);
+            if (seconds > 60 || seconds <0){
+               throw new InvalidTimeException("Seconds must be less than 60");
+            }
+
+            int totalTime = (hours * 60 * 60) + (minutes * 60) + seconds;
+            return totalTime;
+    }
+
+        public static void main (String[]args) {
+            Scanner s = new Scanner(System.in);
+            String timeOne, timeTwo;
+            int one = 0,two = 0;
+
+            System.out.print("Enter time 1 in 24hr format as follows (HH:MM:SS)\n");
+            timeOne = s.nextLine();
+            System.out.print("Enter time 2 in 24hr format as follows (HH:MM:SS)\n");
+            timeTwo = s.nextLine();
+            try {
+                two =timeFormat(timeTwo);
+                one = timeFormat(timeOne);
+
+
+                if (one < two){
+                    int newTotal = two -one;
+                    System.out.println("Difference in seconds: " + newTotal);
+                }
+                if (one > two){
+                    int total = one - two;
+                    System.out.println("Difference in seconds: " + total);
+                }
+
+            } catch (InvalidTimeException e){
+                System.out.println(e.getMessage());
+            }
+        }
+}
